@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111827">
+    <meta name="description" content="OrsyFoot — analyses et probabilités football basées sur les données.">
+    <title>OrsyFoot — Analyse football</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23111827'/%3E%3Ctext x='50' y='67' font-size='58' text-anchor='middle' fill='%2395e84e' font-family='Arial' font-weight='bold'%3EO%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js?v=16" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Navigation principale" aria-hidden="false">
+        <a class="brand" href="#" data-page="dashboard" aria-label="OrsyFoot, accueil">
+          <span class="brand-mark">O</span><span>orsy<span class="brand-light">foot</span></span>
+        </a>
+        <div class="side-label">MENU PRINCIPAL</div>
+        <nav class="main-nav">
+          <button class="nav-link active" data-page="dashboard"><span class="nav-icon">⌂</span>Vue d'ensemble</button>
+          <button class="nav-link" data-page="matches"><span class="nav-icon">▦</span>Matchs<span class="nav-count" id="match-nav-count">0</span></button>
+          <button class="nav-link" data-page="valuebets"><span class="nav-icon">◈</span>Value bets</button>
+          <button class="nav-link" data-page="performance"><span class="nav-icon">↗</span>Performances</button>
+        </nav>
+        <div class="side-label side-label-leagues">COMPÉTITIONS</div>
+        <div class="league-nav">
+          <button class="league-link" data-league="Premier League"><span class="league-dot dot-england"></span>Premier League</button>
+          <button class="league-link" data-league="La Liga"><span class="league-dot dot-spain"></span>La Liga</button>
+          <button class="league-link" data-league="Ligue 1"><span class="league-dot dot-france"></span>Ligue 1</button>
+          <button class="league-link" data-league="Serie A"><span class="league-dot dot-italy"></span>Serie A</button>
+          <button class="league-link" data-league="Ligue des champions"><span class="league-dot dot-champions"></span>Ligue des champions</button>
+          <button class="league-link" data-league="Ligue Europa"><span class="league-dot dot-europa"></span>Ligue Europa</button>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="model-card">
+            <div class="model-card-top"><span class="status-pulse"></span><span>SOURCE DE DONNÉES</span></div>
+            <strong>Scores &amp; calendrier</strong>
+            <span id="provider-state">Connexion à ESPN…</span>
+          </div>
+          <div class="profile">
+            <div class="avatar">OF</div>
+            <div class="profile-name"><strong>OrsyFoot</strong><span>Édition découverte</span></div>
+            <span class="profile-more">···</span>
+          </div>
+        </div>
+      </aside>
+      <button class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Fermer le menu" hidden></button>
+
+      <main class="main-area">
+        <header class="topbar">
+          <button class="mobile-menu-button" id="mobile-menu-button" aria-label="Ouvrir le menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+          <div class="mobile-brand"><span class="brand-mark">O</span>orsy<span class="brand-light">foot</span></div>
+          <div class="breadcrumb"><span>OrsyFoot</span><span class="crumb-slash">/</span><strong id="page-breadcrumb">Vue d'ensemble</strong></div>
+          <div class="topbar-actions">
+            <span class="live-indicator" id="feed-status"><span class="live-dot"></span>Connexion à ESPN…</span>
+            <button class="icon-button" id="refresh-button" aria-label="Actualiser les scores" title="Actualiser les scores">↻</button>
+            <button class="icon-button" id="install-button" aria-label="Installer OrsyFoot" title="Installer l'application" hidden>↓</button>
+            <button class="icon-button notification-button" aria-label="Notifications" title="Notifications">♧<i></i></button>
+            <div class="top-avatar">OF</div>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="page-view active" id="page-dashboard">
+            <div class="page-heading">
+              <div><div class="eyebrow"><span class="eyebrow-line"></span> <span id="current-date-label"></span></div><h1>Vue d'ensemble <span class="heading-wave">✳</span></h1><p class="page-subtitle">Scores et calendriers actualisés depuis les flux des compétitions.</p></div>
+              <button class="date-button" id="date-button"><span>▦</span> <span id="date-button-label"></span> <span class="date-caret">⌄</span></button>
+            </div>
+            <div class="stats-grid">
+              <article class="stat-card"><div class="stat-top"><span>Rencontres chargées</span><span class="stat-icon stat-icon-green">▦</span></div><div class="stat-value" id="stat-matches">—</div><div class="stat-note"><span class="note-dot green-dot"></span>Calendrier ESPN par compétition</div></article>
+              <article class="stat-card"><div class="stat-top"><span>Matchs en direct</span><span class="stat-icon stat-icon-orange">●</span></div><div class="stat-value" id="stat-live">—</div><div class="stat-note"><span class="note-dot orange-dot"></span>Score mis à jour automatiquement</div></article>
+              <article class="stat-card"><div class="stat-top"><span>Value bets détectés</span><span class="stat-icon stat-icon-blue">◎</span></div><div class="stat-value" id="stat-values">0</div><div class="stat-note"><span class="note-muted">Cotes et pronostics vérifiés</span></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Matchs avec xG réels</span><span class="stat-icon stat-icon-purple">⌁</span></div><div class="stat-value" id="stat-xg">—</div><div class="stat-note"><span class="note-dot purple-dot"></span>Statistiques confirmées par API-Football</div></article>
+            </div>
+
+            <div class="section-row"><div><h2>Prochains matchs &amp; scores <span class="subtle-count" id="today-count"></span></h2><p class="section-description">Rencontres réelles — scores, horaires et états fournis par ESPN.</p></div><button class="text-link" data-page="matches">Tous les matchs <span>→</span></button></div>
+            <div class="filter-row" id="dashboard-filters"><button class="filter-chip active" data-filter="all">Tous les matchs</button><button class="filter-chip" data-filter="Premier League"><span class="tiny-flag">🇬🇧</span> Premier League</button><button class="filter-chip" data-filter="La Liga"><span class="tiny-flag">🇪🇸</span> La Liga</button><button class="filter-chip" data-filter="Ligue 1"><span class="tiny-flag">🇫🇷</span> Ligue 1</button><button class="filter-chip" data-filter="Serie A"><span class="tiny-flag">🇮🇹</span> Serie A</button><button class="filter-chip" data-filter="Ligue des champions">Ligue des champions</button><button class="filter-chip" data-filter="Ligue Europa">Ligue Europa</button></div>
+            <div class="match-grid" id="dashboard-matches"></div>
+            <div class="dashboard-bottom">
+              <section class="panel performance-panel">
+                <div class="panel-header"><div><h2>Scores en direct</h2><p id="live-panel-caption">État des rencontres actuellement en cours.</p></div><span class="updated-tag" id="last-updated">En attente</span></div>
+                <div id="live-scores-panel" class="top-value-list"></div>
+              </section>
+              <section class="panel value-panel"><div class="panel-header"><div><h2>Données d'analyse</h2><span class="hot-label">LIVE</span><p id="enrichment-status">Vérification des fournisseurs…</p></div><button class="mini-arrow" id="enrichment-refresh" aria-label="Actualiser cotes et analyses">↻</button></div><div class="source-summary"><div><strong>Pronostics &amp; xG</strong><span id="football-provider-status">API-Football · clé à configurer</span></div><div><strong>Cotes bookmakers</strong><span id="odds-provider-status">The Odds API · clé à configurer</span></div></div><div id="top-value-bets" class="top-value-list"></div><button class="panel-footer-link" data-page="valuebets">Voir les value bets calculés <span>→</span></button></section>
+            </div>
+            <p class="disclaimer">Scores et bilans saison : ESPN. Pronostics : modèle simplifié du bilan victoire-nul-défaite, prédiction API-Football si disponible, ou tendance moyenne des cotes. Une probabilité, même supérieure à 70 %, n'est ni une certitude ni un taux de réussite garanti. Les paris peuvent entraîner des pertes ; si tu cherches à récupérer l'argent perdu, fais une pause et contacte un service d'aide aux joueurs de ton pays.</p>
+          </section>
+
+          <section class="page-view" id="page-matches">
+            <div class="page-heading compact-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> CENTRE DE MATCHS</div><h1>Matchs <span class="heading-wave">✳</span></h1><p class="page-subtitle">Favori indicatif des cotes avant le match ; tirs, centres et corners observés pendant le direct.</p></div><div class="search-wrap"><span>⌕</span><input id="match-search" type="search" placeholder="Rechercher une équipe..." aria-label="Rechercher une équipe"></div></div>
+            <div class="filter-row" id="matches-filters"><button class="filter-chip active" data-filter="all">Toutes les compétitions</button><button class="filter-chip" data-filter="Premier League">🇬🇧 Premier League</button><button class="filter-chip" data-filter="La Liga">🇪🇸 La Liga</button><button class="filter-chip" data-filter="Ligue 1">🇫🇷 Ligue 1</button><button class="filter-chip" data-filter="Serie A">🇮🇹 Serie A</button><button class="filter-chip" data-filter="Ligue des champions">Ligue des champions</button><button class="filter-chip" data-filter="Ligue Europa">Ligue Europa</button></div>
+            <div class="matches-page-grid" id="all-matches"></div><p class="empty-state" id="matches-empty" hidden>Aucun match ne correspond à votre recherche.</p>
+            <p class="disclaimer">Les données dépendent de la disponibilité du flux ESPN et peuvent avoir un léger délai.</p>
+          </section>
+
+          <section class="page-view" id="page-valuebets">
+            <div class="page-heading compact-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> ANALYSE DU MARCHÉ</div><h1>Value bets <span class="heading-wave">✳</span></h1><p class="page-subtitle">Valeur indicative = probabilité prédite × meilleure cote observée − 1.</p></div><div class="value-summary"><span class="live-dot"></span><strong id="value-count">0 opportunité</strong></div></div>
+            <div class="info-banner"><span class="info-icon">i</span><span>Comparaison basée sur la prédiction API-Football et la meilleure cote 1N2 observée par bookmaker via The Odds API. Le calcul ne tient pas compte de la marge du marché, des limites, de la disponibilité locale ni de l'incertitude. Aucun seuil, y compris 70 %, ne garantit une issue ou un taux de réussite. Aucune garantie ni conseil de pari ; ne cherche pas à récupérer des pertes en rejouant.</span></div>
+            <div class="value-table-wrap"><table class="value-table"><thead><tr><th>RENCONTRE</th><th>MARCHÉ</th><th>PROBA. MODÈLE</th><th>MEILLEURE COTE</th><th>VALUE</th></tr></thead><tbody id="value-table-body"></tbody></table><div class="empty-table" id="values-empty">Aucune opportunité calculable : une cote et une probabilité réelle sont nécessaires pour la même rencontre.</div></div>
+          </section>
+
+          <section class="page-view" id="page-performance">
+            <div class="page-heading compact-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> SUIVI &amp; HISTORIQUE</div><h1>Performances <span class="heading-wave">✳</span></h1><p class="page-subtitle">Les résultats ne seront calculés qu'après le lancement d'un modèle réel.</p></div></div>
+            <div class="empty-provider"><span class="provider-icon">↗</span><h2>Historique prédictif non configuré</h2><p>Le flux ESPN fournit les rencontres et les scores, mais pas l'historique de prédictions OrsyFoot. Le suivi de précision et le backtesting apparaîtront après connexion d'un modèle et stockage de ses prédictions horodatées.</p></div>
+          </section>
+          <footer class="app-footer"><span>© <span id="current-year"></span> OrsyFoot</span><span>Calendriers et scores : ESPN.</span></footer>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <dialog class="match-dialog" id="match-dialog" aria-labelledby="dialog-title"><form method="dialog"><button class="dialog-close" aria-label="Fermer">×</button></form><div id="dialog-content"></div></dialog>
+  </body>
+</html>
